@@ -1,3 +1,4 @@
+import 'package:blog_application/features/blog/presantation/screens/blogPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:blog_application/core/common/loader.dart';
@@ -75,11 +76,19 @@ class _LogInPageState extends State<LogInPage> {
                     AuthGradientButton(
                       buttonText: "Sign In",
                       onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          context.read<AuthBloc>().add(AuthLogin(
-                              email: emailController.text.trim(),
-                              password: passwordController.text.trim()));
-                        }
+                        listener: (context, state) {
+  if (state is AuthFailure) {
+    showSnacbar(context, state.message);
+  } else if (state is AuthSuccess) {
+    print("Kullanıcı başarıyla giriş yaptı! UID: ${state.user.id}");
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => BlogPage()), // Gidilecek sayfa
+    );
+  }
+};
+
                       },
                     ),
                     SizedBox(
